@@ -1,0 +1,29 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    
+env:
+  Project: src/CalculatorApp/CalculatorApp.csproj
+  TestProject: tests/CalculatorApp.Tests/CalculatorApp.Tests.csproj
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore $Project
+    - name: Build
+      run: dotnet build $Project --no-restore
+    - name: Test
+      run: dotnet test $TestProject --no-build --verbosity normal
